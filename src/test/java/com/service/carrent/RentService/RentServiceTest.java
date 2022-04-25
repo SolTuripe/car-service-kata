@@ -60,6 +60,7 @@ class RentServiceTest {
         assertThat(sut.getClass(), equalTo(rent.getClass()));
         assertThat(sut.getRentedCar(), equalTo(car));
         assertThat(sut.getRentingUser(), equalTo(user));*/
+
     }
 
     @Test

@@ -8,6 +8,8 @@ import com.service.carrent.repository.CarRepository;
 import com.service.carrent.repository.RentRepository;
 import com.service.carrent.repository.UserRepository;
 
+import java.util.Date;
+
 public class RentService {
 
     private UserRepository userRepository;
@@ -44,7 +46,7 @@ public class RentService {
         Rent rent = new Rent(new User(), new Car());
         rent.setRentingUser(userOptional.get());
         rent.setRentedCar(carOptional.get());
-        //rent.setDate(new Date());
+        rent.setDate(new Date());
 
         //save rent item and return
         return rentRepository.save(rent);
