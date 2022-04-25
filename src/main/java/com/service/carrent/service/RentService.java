@@ -23,7 +23,7 @@ public class RentService {
     public Rent rentACar(Long userId, Long carId) {
 
         //find a user
-        var userOptional = userRepository.findById(userId);
+        var userOptional = userRepository.findUserById(userId);
         if (userOptional.isEmpty()) {
             throw new RentServiceException("User not found", "R-101");
         }
@@ -37,7 +37,7 @@ public class RentService {
         //check if car is rented already
         var rentOptional = rentRepository.findRentByCar(carOptional.get());
         if(rentOptional.isPresent()) {
-            throw new RentServiceException("Car rented yet", "C-103");
+            throw new RentServiceException("Car not rented", "C-103");
         }
 
         //create rent item

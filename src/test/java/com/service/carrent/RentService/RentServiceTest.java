@@ -40,18 +40,18 @@ class RentServiceTest {
     void CanRentACar() {
         //Given - stage
         User user = new User(1L, "Rosa");
-        Car car = new Car(1l, 333L, "gogo");
+        Car car = new Car(1l, "T333", "gogo");
         Rent rent = new Rent(user, car);
         RentService rentService = new RentService(userRepository, carRepository, rentRepository);
 
         //When - action
-        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findUserById(user.getId())).thenReturn(Optional.of(user));
         Mockito.when(carRepository.findCarById(car.getId())).thenReturn(Optional.of(car));
         Mockito.when(rentRepository.findRentByCar(car)).thenReturn(Optional.empty());
         Mockito.when(rentRepository.save(any(Rent.class))).thenReturn(rent);
 
         //Then - result
-        assertEquals(user, userRepository.findById(user.getId()).get());
+        assertEquals(user, userRepository.findUserById(user.getId()).get());
         assertEquals(car, carRepository.findCarById(car.getId()).get());
         assertEquals(rent, rentRepository.save(rent));
 
@@ -70,7 +70,7 @@ class RentServiceTest {
 
         var rentService = new RentService(userRepository, carRepository, rentRepository);
 
-        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
+        Mockito.when(userRepository.findUserById(user.getId())).thenReturn(Optional.empty());
         Mockito.when(carRepository.findCarById(car.getId())).thenReturn(Optional.of(car));
         Mockito.when(rentRepository.save(any(Rent.class))).thenReturn(rent);
 
@@ -88,7 +88,7 @@ class RentServiceTest {
 
         var rentService = new RentService(userRepository, carRepository, rentRepository);
 
-        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findUserById(user.getId())).thenReturn(Optional.of(user));
         Mockito.when(carRepository.findCarById(car.getId())).thenReturn(Optional.empty());
         Mockito.when(rentRepository.save(rent)).thenReturn(rent);
         Mockito.when(rentRepository.findRentByCar(car)).thenReturn(Optional.empty());
