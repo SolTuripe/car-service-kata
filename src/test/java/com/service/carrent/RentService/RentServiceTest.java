@@ -54,13 +54,6 @@ class RentServiceTest {
         assertEquals(user, userRepository.findUserById(user.getId()).get());
         assertEquals(car, carRepository.findCarById(car.getId()).get());
         assertEquals(rent, rentRepository.save(rent));
-
-        /*var sut = rentService.rentACar(user.getId(), car.getId());
-
-        assertThat(sut.getClass(), equalTo(rent.getClass()));
-        assertThat(sut.getRentedCar(), equalTo(car));
-        assertThat(sut.getRentingUser(), equalTo(user));*/
-
     }
 
     @Test
@@ -73,6 +66,7 @@ class RentServiceTest {
 
         Mockito.when(userRepository.findUserById(user.getId())).thenReturn(Optional.empty());
         Mockito.when(carRepository.findCarById(car.getId())).thenReturn(Optional.of(car));
+        Mockito.when(rentRepository.findRentByCar(car)).thenReturn(Optional.empty());
         Mockito.when(rentRepository.save(any(Rent.class))).thenReturn(rent);
 
         RentServiceException thrown = assertThrows(RentServiceException.class, () -> rentService.rentACar(user.getId(), car.getId()));
@@ -91,12 +85,31 @@ class RentServiceTest {
 
         Mockito.when(userRepository.findUserById(user.getId())).thenReturn(Optional.of(user));
         Mockito.when(carRepository.findCarById(car.getId())).thenReturn(Optional.empty());
-        Mockito.when(rentRepository.save(rent)).thenReturn(rent);
         Mockito.when(rentRepository.findRentByCar(car)).thenReturn(Optional.empty());
+        Mockito.when(rentRepository.save(rent)).thenReturn(rent);
 
         RentServiceException thrown = assertThrows(RentServiceException.class, ()-> rentService.rentACar(user.getId(), car.getId()));
 
         assertEquals("Car not found", thrown.getMessage());
         assertEquals("U-102", thrown.getCode());
+    }
+
+    @Test
+    void ShouldThrowExceptionIfCarExistsInRentRepository() {
+        User user = new User();
+        Car car = new Car();
+        Rent rent = new Rent(user, car);
+
+        RentService rentService = new RentService(userRepository, carRepository, rentRepository);
+
+        Mockito.when(userRepository.findUserById(user.getId())).thenReturn(Optional.of(user));
+        Mockito.when(carRepository.findCarById(car.getId())).thenReturn(Optional.of(car));
+        Mockito.when(rentRepository.findRentByCar(car)).thenReturn(Optional.of(rent));
+        Mockito.when(rentRepository.save(rent)).thenReturn(rent);
+
+        RentServiceException thrown = assertThrows(RentServiceException.class, ()-> rentService.rentACar(user.getId(), car.getId()));
+
+        assertEquals("Car is already rented", thrown.getMessage());
+        assertEquals("C-103", thrown.getCode());
     }
 }

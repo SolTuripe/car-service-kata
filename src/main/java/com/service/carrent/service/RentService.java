@@ -39,7 +39,7 @@ public class RentService {
         //check if car is rented already
         var rentOptional = rentRepository.findRentByCar(carOptional.get());
         if(rentOptional.isPresent()) {
-            throw new RentServiceException("Car not rented", "C-103");
+            throw new RentServiceException("Car is already rented", "C-103");
         }
 
         //create rent item
